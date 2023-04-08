@@ -5,9 +5,7 @@ from django.contrib.auth.models import User
 class Quiz(models.Model):
 
     class Meta:
-        verbose_name = 'Quiz'
         verbose_name_plural = 'Quizzes'
-        ordering = ['id']
 
     title = models.CharField(max_length=255)
     description = models.TextField()
@@ -27,17 +25,15 @@ class Quiz(models.Model):
         default=UPCOMING,
     )
 
+    def __str__(self):
+        return self.title
+
 
 class Question(models.Model):
 
-    class Meta:
-        verbose_name = 'Question'
-        verbose_name_plural = 'Questions'
-        ordering = ['id']
-
     text = models.TextField()
     image = models.ImageField(upload_to='question_images/', null=True, blank=True)
-    quiz = models.ForeignKey(Quiz, verbose_name='quiz', on_delete=models.CASCADE)
+    quiz = models.ForeignKey(Quiz, related_name='questions' ,verbose_name='quiz', on_delete=models.CASCADE)
     MCQ = 'mcq'
     OPEN_TEXT = 'open_text'
     TYPE_CHOICES = [
@@ -50,11 +46,10 @@ class Question(models.Model):
         default=OPEN_TEXT,
     )
 
+    def __str__(self):
+        return self.text
 
-class QuizQuestion(models.Model):
-    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    sequence_number = models.PositiveIntegerField()
+
 
 
 class UserQuiz(models.Model):
